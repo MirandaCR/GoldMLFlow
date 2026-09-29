@@ -58,6 +58,8 @@ dvc repro          # extract → validate → features → train → promote →
 
 You'll see each stage run in order. Run it again and DVC says *"didn't change, skipping"*: it only re-runs what changed.
 
+> ⚠️ **Always activate the `.venv` first** (the prompt shows `(.venv)`). Running with the global Python gives `ModuleNotFoundError: No module named 'mlflow'`. Shortcut for the dashboard: `.\run_dashboard.ps1`.
+
 ## 👀 Look at the results
 
 ```powershell

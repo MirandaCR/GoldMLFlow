@@ -41,6 +41,9 @@
 **Can I get rich with this model?**
 No. It's ~51.5% right and lost to buy & hold in the test year. It's a teaching tool. Not financial advice.
 
+**`ModuleNotFoundError: No module named 'mlflow'`** (or `dvc`, `xgboost`…)
+You're using the global Python instead of the project's `.venv`. Activate it first (`.\.venv\Scripts\Activate.ps1` — the prompt shows `(.venv)`), or launch the dashboard with `.\run_dashboard.ps1`.
+
 **`MT5 initialize() failed`**
 Open the MetaTrader 5 terminal and log in (a demo account works). The Python package talks to the running terminal.
 

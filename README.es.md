@@ -77,6 +77,7 @@ dvc repro                          # 🔁 ejecuta todo el pipeline (MetaTrader 5
 mlflow ui --backend-store-uri sqlite:///mlflow.db    # 🧪 experimentos → :5000
 docker compose up --build          # 🐳 API :8000/docs  +  📊 dashboard :8501
 python scripts/live_demo.py        # 🔮 predicción en vivo desde MT5
+.\run_dashboard.ps1                # 📊 dashboard con el .venv (sin Docker)
 ```
 
 ¿Sin MetaTrader 5 (Mac/Linux)? Todo lo demás funciona con la muestra de `data/sample/` → ver [Instalación](docs/es/01-setup.md).

@@ -41,6 +41,9 @@
 **¿Me puedo hacer rico con este modelo?**
 No. Acierta ~51,5 % y perdió contra comprar y mantener en el año de prueba. Es una herramienta para aprender. No es asesoría financiera.
 
+**`ModuleNotFoundError: No module named 'mlflow'`** (o `dvc`, `xgboost`…)
+Estás usando el Python global en vez del `.venv` del proyecto. Actívalo primero (`.\.venv\Scripts\Activate.ps1`: la terminal muestra `(.venv)`) o lanza el dashboard con `.\run_dashboard.ps1`.
+
 **`MT5 initialize() failed`**
 Abre la terminal de MetaTrader 5 e inicia sesión (sirve una cuenta demo). El paquete de Python habla con la terminal abierta.
 

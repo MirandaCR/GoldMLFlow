@@ -142,7 +142,20 @@ def call(method: str, path: str, payload: dict | None = None) -> dict:
     if USE_API:
         r = httpx.request(method, f"{API_URL}{path}", json=payload, timeout=60)
     else:
-        r = local_client().request(method, path, json=payload)
+        try:
+            client = local_client()
+        except ImportError as e:
+            # Typical cause: Streamlit launched with the global Python instead of the project's .venv
+            st.error(f"❌ `{e.name}` no está instalado en este Python / is not installed in this Python:\n\n"
+                     f"`{sys.executable}`")
+            st.markdown(
+                "**ES:** Ejecuta el dashboard con el entorno virtual del proyecto · "
+                "**EN:** Run the dashboard with the project's virtual environment:\n"
+                "```powershell\n.\\run_dashboard.ps1\n# o / or:\n"
+                ".\\.venv\\Scripts\\Activate.ps1\nstreamlit run app/dashboard.py\n```\n"
+                f"…o levanta la API / …or start the API: `uvicorn src.api.main:app` ({API_URL})")
+            st.stop()
+        r = client.request(method, path, json=payload)
     r.raise_for_status()
     return r.json()
 

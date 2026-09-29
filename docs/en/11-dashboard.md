@@ -7,7 +7,7 @@
 | 🍳 **Analogy** | 🪑 The dining room: where customers (non-technical people) see and enjoy the food |
 | 🎯 **Goal** | Show the whole project visually to anyone, in Spanish or English |
 | 🏭 **Code** | [`app/dashboard.py`](../../app/dashboard.py) |
-| ▶️ **Run** | `streamlit run app/dashboard.py` → http://localhost:8501 · or `docker compose up` |
+| ▶️ **Run** | `.\run_dashboard.ps1` (uses the `.venv`) or `streamlit run app/dashboard.py` → http://localhost:8501 · or `docker compose up` |
 
 ## 🧭 Sidebar
 

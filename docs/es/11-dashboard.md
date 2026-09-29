@@ -7,7 +7,7 @@
 | 🍳 **Analogía** | 🪑 El comedor: donde los clientes (personas no técnicas) ven y disfrutan la comida |
 | 🎯 **Objetivo** | Mostrar todo el proyecto de forma visual a cualquier persona, en español o inglés |
 | 🏭 **Código** | [`app/dashboard.py`](../../app/dashboard.py) |
-| ▶️ **Ejecutar** | `streamlit run app/dashboard.py` → http://localhost:8501 · o `docker compose up` |
+| ▶️ **Ejecutar** | `.\run_dashboard.ps1` (usa el `.venv`) o `streamlit run app/dashboard.py` → http://localhost:8501 · o `docker compose up` |
 
 ## 🧭 Barra lateral
 
