@@ -1,0 +1,15 @@
+# ── Core: data + ML + MLOps ───────────────────────────────
+pandas==2.3.3
+numpy>=1.26,<3
+scikit-learn==1.7.2
+xgboost==3.0.0; sys_platform != "linux"
+xgboost-cpu==3.0.0; sys_platform == "linux"   # no 350 MB of GPU libs in Docker/CI
+scipy>=1.13
+matplotlib==3.10.0
+pyyaml>=6.0
+mlflow==3.4.0
+sqlalchemy<2.1          # mlflow 3.4 needs SQLAlchemy 2.0.x
+dvc==3.63.0
+pathspec<1.0            # dvc 3.63 breaks with pathspec 1.x
+# MetaTrader5 only exists for Windows → skipped automatically on Linux (CI/Docker)
+MetaTrader5>=5.0.45; sys_platform == "win32"

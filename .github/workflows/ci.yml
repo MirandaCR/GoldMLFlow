@@ -1,0 +1,107 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  CI — Continuous Integration / Integración Continua               ║
+# ║                                                                   ║
+# ║  EN: The "health inspector". Runs on EVERY push and pull request. ║
+# ║      If any step fails, the change is marked ❌ and can't merge.  ║
+# ║  ES: El "inspector de sanidad". Corre en CADA push y pull request.║
+# ║      Si algún paso falla, el cambio queda ❌ y no se fusiona.     ║
+# ║                                                                   ║
+# ║   ① lint & tests → ② smoke pipeline → ③ quality gate → ④ docker   ║
+# ╚══════════════════════════════════════════════════════════════════╝
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  # ① Is the code clean and do the unit tests pass?
+  lint-and-test:
+    name: ① Lint & unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - name: Install dependencies
+        # MetaTrader5 is skipped automatically on Linux (see requirements.txt)
+        run: pip install -r requirements.txt -r requirements-api.txt pytest httpx ruff
+      - name: Lint (ruff)
+        run: ruff check src tests scripts app
+      - name: Unit tests (pytest)
+        run: pytest -v
+
+  # ② Does the WHOLE pipeline still run end-to-end? (on the small sample in Git)
+  smoke-pipeline:
+    name: ② Smoke pipeline (sample data)
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Validate → Features → Train → Evaluate → Drift
+        run: |
+          python -m src.data.validate   --input data/sample/xauusd_h1_sample.csv
+          python -m src.features.build  --input data/sample/xauusd_h1_sample.csv --output data/processed/features_sample.csv
+          python -m src.models.train    --input data/processed/features_sample.csv
+          python -m src.models.promote  --no-export
+          python -m src.monitoring.drift --input data/processed/features_sample.csv
+      - name: Write results to the job summary
+        run: |
+          echo "## 🧪 Smoke pipeline on sample data" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          cat reports/metrics.json >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: smoke-reports
+          path: |
+            reports/
+            mlartifacts/
+
+  # ③ Is the champion model committed in the repo good enough to ship?
+  quality-gate:
+    name: ③ Model quality gate
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install pyyaml
+      - name: Check champion metrics vs. thresholds in params.yaml
+        run: python -m src.models.check_gate | tee -a $GITHUB_STEP_SUMMARY
+
+  # ④ Does the Docker image build and answer requests?
+  docker-build:
+    name: ④ Docker build & smoke test
+    needs: [smoke-pipeline, quality-gate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t goldmlflow-api:ci .
+      - name: Run container and call the API
+        run: |
+          docker run -d --name api -p 8000:8000 goldmlflow-api:ci
+          for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 2; done
+          curl -sf localhost:8000/model-info | python -m json.tool
+      - name: Show logs if something failed
+        if: failure()
+        run: docker logs api

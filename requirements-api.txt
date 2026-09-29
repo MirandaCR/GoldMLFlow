@@ -1,0 +1,11 @@
+# ── Only what the API container needs (small image) ───────
+fastapi==0.141.1
+uvicorn[standard]==0.54.0
+pydantic>=2.7
+pandas==2.3.3
+numpy>=1.26,<3
+scikit-learn==1.7.2
+xgboost==3.0.0; sys_platform != "linux"
+xgboost-cpu==3.0.0; sys_platform == "linux"   # no 350 MB of GPU libs in Docker/CI
+mlflow-skinny==3.4.0
+pyyaml>=6.0

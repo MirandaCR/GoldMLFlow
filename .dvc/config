@@ -1,0 +1,6 @@
+[core]
+    analytics = false
+    autostage = true
+    remote = localstorage
+['remote "localstorage"']
+    url = ../../GoldMLFlow-dvc-storage

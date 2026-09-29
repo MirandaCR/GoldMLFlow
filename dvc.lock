@@ -1,0 +1,186 @@
+schema: '2.0'
+stages:
+  extract:
+    cmd: python -m src.data.extract --sample
+    deps:
+    - path: src/data/extract.py
+      hash: md5
+      md5: 6ec8b44a17a08e2a607f348ccd483bfa
+      size: 3374
+    params:
+      params.yaml:
+        data:
+          symbol_candidates:
+          - XAUUSD
+          - GOLD
+          - XAUUSD.m
+          - XAUUSDm
+          - XAUUSD.a
+          - GOLDm
+          timeframe: H1
+          n_bars: 30000
+          raw_path: data/raw/xauusd_h1.csv
+          sample_path: data/sample/xauusd_h1_sample.csv
+          sample_bars: 4000
+    outs:
+    - path: data/raw/xauusd_h1.csv
+      hash: md5
+      md5: f5c732f265510a5f8b7ac4e0e56d19e4
+      size: 1825840
+    - path: data/sample/xauusd_h1_sample.csv
+      hash: md5
+      md5: ef0f5e4debe7120d298cd05fd14719ef
+      size: 245700
+  validate:
+    cmd: python -m src.data.validate
+    deps:
+    - path: data/raw/xauusd_h1.csv
+      hash: md5
+      md5: f5c732f265510a5f8b7ac4e0e56d19e4
+      size: 1825840
+    - path: src/data/validate.py
+      hash: md5
+      md5: dc7440aec7294632065ed8b0678bc280
+      size: 2542
+    params:
+      params.yaml:
+        validate:
+          max_missing_pct: 0.0
+          min_rows: 1000
+          report_path: reports/data_validation.json
+    outs:
+    - path: reports/data_validation.json
+      hash: md5
+      md5: ad385bd3dda1f73f7cbedb27506823f0
+      size: 343
+  features:
+    cmd: python -m src.features.build
+    deps:
+    - path: data/raw/xauusd_h1.csv
+      hash: md5
+      md5: f5c732f265510a5f8b7ac4e0e56d19e4
+      size: 1825840
+    - path: reports/data_validation.json
+      hash: md5
+      md5: ad385bd3dda1f73f7cbedb27506823f0
+      size: 343
+    - path: src/features/build.py
+      hash: md5
+      md5: 2f61f6ae8ec5b59706f1af20edd6b25d
+      size: 4928
+    params:
+      params.yaml:
+        features:
+          processed_path: data/processed/features.csv
+          return_lags:
+          - 1
+          - 2
+          - 3
+          - 5
+          - 10
+          - 24
+          sma_windows:
+          - 10
+          - 50
+          - 200
+          rsi_window: 14
+          volatility_window: 24
+          horizon: 1
+    outs:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: 1caf43e9468486f2acb92c920228c001
+      size: 11745509
+  train:
+    cmd: python -m src.models.train
+    deps:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: 1caf43e9468486f2acb92c920228c001
+      size: 11745509
+    - path: src/models/train.py
+      hash: md5
+      md5: 1057e57f21dea2b89ce5036cd2b45165
+      size: 10823
+    params:
+      params.yaml:
+        train:
+          test_size: 0.2
+          cv_splits: 5
+          random_state: 42
+          experiment_name: gold-direction-h1
+          models:
+            logistic_regression:
+              C: 0.1
+              max_iter: 1000
+            random_forest:
+              n_estimators: 300
+              max_depth: 6
+              min_samples_leaf: 50
+            xgboost:
+              n_estimators: 300
+              max_depth: 3
+              learning_rate: 0.03
+              subsample: 0.8
+              colsample_bytree: 0.8
+    outs:
+    - path: reports/train_results.json
+      hash: md5
+      md5: 236e89145f07e07ec576e0a2a9f2f3a0
+      size: 2372
+  promote:
+    cmd: python -m src.models.promote
+    deps:
+    - path: reports/train_results.json
+      hash: md5
+      md5: 236e89145f07e07ec576e0a2a9f2f3a0
+      size: 2372
+    - path: src/models/promote.py
+      hash: md5
+      md5: 2f71ef5cb327f74ba35ce2e3addbcc58
+      size: 4486
+    params:
+      params.yaml:
+        evaluate:
+          primary_metric: roc_auc
+          min_roc_auc: 0.51
+          must_beat_baseline: true
+          registered_model_name: gold-direction-h1
+          champion_dir: models/champion
+          metrics_path: reports/metrics.json
+    outs:
+    - path: models/champion
+      hash: md5
+      md5: af9620e5c0ecbea426c66015218385ab.dir
+      size: 362294
+      nfiles: 8
+    - path: reports/metrics.json
+      hash: md5
+      md5: bdb8d193a5d61f662d59c202e297640b
+      size: 1158
+  drift:
+    cmd: python -m src.monitoring.drift
+    deps:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: 1caf43e9468486f2acb92c920228c001
+      size: 11745509
+    - path: src/monitoring/drift.py
+      hash: md5
+      md5: efbecbe10ae7840a7b2ec7d193388c61
+      size: 3701
+    params:
+      params.yaml:
+        monitor:
+          recent_bars: 500
+          p_value_threshold: 0.01
+          report_path: reports/drift.json
+    outs:
+    - path: reports/drift.json
+      hash: md5
+      md5: 5a33a3c006eaebceb00df6a16c638c49
+      size: 2854
+    - path: reports/figures/drift.png
+      hash: md5
+      md5: 4ea03c2f83f8c8de33fa5b62b6fb02c7
+      size: 35809

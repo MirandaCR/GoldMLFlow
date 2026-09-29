@@ -1,0 +1,6 @@
+# ── Streamlit dashboard (visual app to see & use the model) ──
+streamlit==1.64.0
+plotly==7.1.0
+httpx>=0.27
+pandas==2.3.3
+pyyaml>=6.0

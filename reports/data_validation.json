@@ -1,0 +1,15 @@
+{
+  "input": "data/raw/xauusd_h1.csv",
+  "rows": 29999,
+  "passed": true,
+  "checks": {
+    "required_columns": true,
+    "enough_rows": true,
+    "no_missing_values": true,
+    "no_duplicated_timestamps": true,
+    "time_is_sorted": true,
+    "prices_positive": true,
+    "high_is_highest": true,
+    "low_is_lowest": true
+  }
+}

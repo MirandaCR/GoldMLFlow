@@ -1,0 +1,59 @@
+# ╔══════════════════════════════════════════════════════════════════════╗
+# ║  docker compose up --build                                            ║
+# ║     → 🍽️ API        http://localhost:8000/docs                        ║
+# ║     → 📊 Dashboard  http://localhost:8501                              ║
+# ║  docker compose --profile team up mlflow → 🧪 MLflow server :5000     ║
+# ║                                                                       ║
+# ║  EN: Several containers that work together, started with ONE command. ║
+# ║  ES: Varios contenedores que trabajan juntos, con UN solo comando.    ║
+# ║                                                                       ║
+# ║   [ browser ] ──▶ [ dashboard :8501 ] ──HTTP──▶ [ api :8000 + model ] ║
+# ╚══════════════════════════════════════════════════════════════════════╝
+services:
+  api:
+    build: .
+    image: goldmlflow-api:local
+    ports:
+      - "${API_PORT:-8000}:8000"         # change with $env:API_PORT=8010 if 8000 is busy
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    image: goldmlflow-dashboard:local
+    ports:
+      - "${DASHBOARD_PORT:-8501}:8501"
+    environment:
+      API_URL: http://api:8000      # containers find each other by service name
+    volumes:
+      # Read-only view of the project (reports, data, pipeline files) for the charts & MLOps-flow tab
+      - ./reports:/app/reports:ro
+      - ./data:/app/data:ro
+      - ./dvc.lock:/app/dvc.lock:ro
+      - ./models/champion/metadata.json:/app/models/champion/metadata.json:ro
+      - ./src:/app/src:ro
+      - ./.github:/app/.github:ro
+      - ./Dockerfile:/app/Dockerfile:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # "Team mode": a central MLflow server. Point training at it with
+  #   $env:MLFLOW_TRACKING_URI="http://localhost:5000"; dvc repro -f train
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.4.0
+    profiles: ["team"]
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow-data:/mlflow
+    command: >
+      mlflow server --host 0.0.0.0 --port 5000
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --artifacts-destination /mlflow/artifacts
+      --serve-artifacts
+
+volumes:
+  mlflow-data:

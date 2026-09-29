@@ -1,0 +1,122 @@
+{
+  "reference_period": [
+    "2021-09-13 14:00:00",
+    "2025-09-24 05:00:00"
+  ],
+  "current_period": [
+    "2026-08-28 09:00:00",
+    "2026-09-29 04:00:00"
+  ],
+  "drift_share": 0.7777777777777778,
+  "retrain_recommended": true,
+  "features": [
+    {
+      "feature": "volatility",
+      "ks_stat": 0.7242340702210662,
+      "p_value": 7.229869741330776e-262,
+      "drift": true
+    },
+    {
+      "feature": "dist_sma_200",
+      "ks_stat": 0.456583917110617,
+      "p_value": 6.789803747913201e-94,
+      "drift": true
+    },
+    {
+      "feature": "range_pct",
+      "ks_stat": 0.42338101430429126,
+      "p_value": 3.5229537685266055e-80,
+      "drift": true
+    },
+    {
+      "feature": "dist_sma_50",
+      "ks_stat": 0.31520458072905744,
+      "p_value": 9.00648799760672e-44,
+      "drift": true
+    },
+    {
+      "feature": "ret_24h",
+      "ks_stat": 0.2462034481312136,
+      "p_value": 1.209271834017509e-26,
+      "drift": true
+    },
+    {
+      "feature": "ret_10h",
+      "ks_stat": 0.20219564579051136,
+      "p_value": 4.875357522271159e-18,
+      "drift": true
+    },
+    {
+      "feature": "rsi",
+      "ks_stat": 0.20057410126263692,
+      "p_value": 9.365045566743778e-18,
+      "drift": true
+    },
+    {
+      "feature": "dist_sma_10",
+      "ks_stat": 0.19529485297202068,
+      "p_value": 7.553402544176974e-17,
+      "drift": true
+    },
+    {
+      "feature": "ret_3h",
+      "ks_stat": 0.19431939259197112,
+      "p_value": 1.103891787197876e-16,
+      "drift": true
+    },
+    {
+      "feature": "ret_5h",
+      "ks_stat": 0.19290523931372963,
+      "p_value": 1.9067978784849406e-16,
+      "drift": true
+    },
+    {
+      "feature": "ret_2h",
+      "ks_stat": 0.19141213977096352,
+      "p_value": 3.380581898900752e-16,
+      "drift": true
+    },
+    {
+      "feature": "body_pct",
+      "ks_stat": 0.1828256218801124,
+      "p_value": 8.326736655422627e-15,
+      "drift": true
+    },
+    {
+      "feature": "ret_1h",
+      "ks_stat": 0.1783087377826251,
+      "p_value": 4.227483268778045e-14,
+      "drift": true
+    },
+    {
+      "feature": "macd_hist",
+      "ks_stat": 0.1580256722177944,
+      "p_value": 3.729842188166212e-11,
+      "drift": true
+    },
+    {
+      "feature": "volume_z",
+      "ks_stat": 0.06643323964931425,
+      "p_value": 0.02525865732020438,
+      "drift": false
+    },
+    {
+      "feature": "dayofweek",
+      "ks_stat": 0.028424598347246116,
+      "p_value": 0.8125362656244405,
+      "drift": false
+    },
+    {
+      "feature": "hour_sin",
+      "ks_stat": 0.006294223750996308,
+      "p_value": 1.0,
+      "drift": false
+    },
+    {
+      "feature": "hour_cos",
+      "ks_stat": 0.002894416712110437,
+      "p_value": 1.0,
+      "drift": false
+    }
+  ]
+}

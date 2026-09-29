@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# MLflow local store (each person has their own lab notebook)
+mlflow.db
+mlartifacts/
+mlruns/
+
+# DVC-managed data is ignored by Git automatically (see data/*/.gitignore)
+/dvc-storage/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.env

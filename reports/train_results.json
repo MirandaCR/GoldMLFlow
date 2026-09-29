@@ -1,0 +1,76 @@
+{
+  "parent_run_id": "a4ec644e2e5b4b99a540e5ce514b8e51",
+  "tracking_uri": "sqlite:///C:/Users/Asus/Desktop/Claude Projects/MLOps Trading/mlflow.db",
+  "features": [
+    "ret_1h",
+    "ret_2h",
+    "ret_3h",
+    "ret_5h",
+    "ret_10h",
+    "ret_24h",
+    "dist_sma_10",
+    "dist_sma_50",
+    "dist_sma_200",
+    "rsi",
+    "macd_hist",
+    "volatility",
+    "range_pct",
+    "body_pct",
+    "volume_z",
+    "hour_sin",
+    "hour_cos",
+    "dayofweek"
+  ],
+  "test_start": "2025-09-24 06:00:00",
+  "test_end": "2026-09-29 04:00:00",
+  "results": [
+    {
+      "model": "baseline",
+      "run_id": "e1e9d950a4dd4b0f95bcd34470e2c20d",
+      "cv_roc_auc_mean": 0.5,
+      "test_accuracy": 0.5092281879194631,
+      "test_precision": 0.5092281879194631,
+      "test_recall": 1.0,
+      "test_f1": 0.6748193440800445,
+      "test_roc_auc": 0.5,
+      "test_strategy_return": 0.09820570159830466,
+      "test_buyhold_return": 0.09820570159830466
+    },
+    {
+      "model": "logistic_regression",
+      "run_id": "78061798b7e64544aabf7fc0e130f032",
+      "cv_roc_auc_mean": 0.5079421790110027,
+      "test_accuracy": 0.5045302013422819,
+      "test_precision": 0.5097852028639618,
+      "test_recall": 0.7037891268533772,
+      "test_f1": 0.591280276816609,
+      "test_roc_auc": 0.5027684422478492,
+      "test_strategy_return": -0.17394406414711938,
+      "test_buyhold_return": 0.09820570159830466
+    },
+    {
+      "model": "random_forest",
+      "run_id": "16197cd5df19484bbae96d318ce1ecb1",
+      "cv_roc_auc_mean": 0.511875769659072,
+      "test_accuracy": 0.5045302013422819,
+      "test_precision": 0.5090707964601769,
+      "test_recall": 0.7581548599670511,
+      "test_f1": 0.6091330244870946,
+      "test_roc_auc": 0.5032462862051,
+      "test_strategy_return": -0.19909941281310894,
+      "test_buyhold_return": 0.09820570159830466
+    },
+    {
+      "model": "xgboost",
+      "run_id": "6428e90d8684489187837c123ffa9b5f",
+      "cv_roc_auc_mean": 0.5092034663351324,
+      "test_accuracy": 0.5147651006711409,
+      "test_precision": 0.5183568677792041,
+      "test_recall": 0.6652388797364086,
+      "test_f1": 0.5826839826839827,
+      "test_roc_auc": 0.5139731621115475,
+      "test_strategy_return": 0.052682867647665166,
+      "test_buyhold_return": 0.09820570159830466
+    }
+  ]
+}
